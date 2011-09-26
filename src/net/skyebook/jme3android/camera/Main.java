@@ -10,6 +10,7 @@ import com.jme3.system.android.AndroidConfigChooser.ConfigType;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.PreviewCallback;
 import android.hardware.Camera.Size;
@@ -49,8 +50,42 @@ public class Main extends AndroidHarness {
 
 		// Open the default i.e. the first rear facing camera.
 		mCamera = Camera.open();
+		mCamera.getParameters().setPreviewFormat(ImageFormat.RGB_565);
 		cameraCurrentlyLocked = defaultCameraId;
 		mPreview = new Preview(this);
+		//mCamera.setPreviewDisplay(mPreview);
+		
+		
+		//mCamera = Camera.open();
+		// Get the buffer
+		mCamera.setPreviewCallback(new PreviewCallback() {
+
+			@Override
+			public void onPreviewFrame(byte[] data, Camera camera) {
+
+				ByteBuffer tData = ByteBuffer.allocateDirect(data.length);
+				tData.put(data);
+				int width = camera.getParameters().getPictureSize().width;
+				int height = camera.getParameters().getPictureSize().height;
+				Log.e("JME3", "Updating jME Texture");
+				getGame().setTexture(camera.getParameters().getPreviewFormat(), width, height, tData);
+				Log.e("JME3", "Updating jME Texture");
+
+			}
+		});
+		Log.e("JME3", "Preview Callback Added");
+		
+		// "set" the preview display
+		try {
+			mCamera.setPreviewDisplay(null);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		mCamera.startPreview();
+		
+		
 		Log.e("JME3", "On Create Finished");
 	}
 
@@ -64,8 +99,8 @@ public class Main extends AndroidHarness {
 
 		// Open the default i.e. the first rear facing camera.
 		//mCamera = Camera.open();
-		cameraCurrentlyLocked = defaultCameraId;
-		mPreview = new Preview(this);
+		//cameraCurrentlyLocked = defaultCameraId;
+		//mPreview = new Preview(this);
 	}
 
 	@Override
@@ -100,11 +135,41 @@ public class Main extends AndroidHarness {
 			mHolder = getHolder();
 			mHolder.addCallback(this);
 			mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+			
+			
+			
 		}
 
 		public void surfaceCreated(SurfaceHolder holder) {
+			
+			
+			
+			mCamera = Camera.open();
+			// Get the buffer
+			mCamera.setPreviewCallback(new PreviewCallback() {
+
+				@Override
+				public void onPreviewFrame(byte[] data, Camera camera) {
+
+					ByteBuffer tData = ByteBuffer.allocateDirect(data.length);
+					tData.put(data);
+					int width = camera.getParameters().getPictureSize().width;
+					int height = camera.getParameters().getPictureSize().height;
+					Log.e("JME3", "Updating jME Texture");
+					getGame().setTexture(camera.getParameters().getPreviewFormat(), width, height, tData);
+					Log.e("JME3", "Updating jME Texture");
+
+				}
+			});
+			Log.e("JME3", "Preview Callback Added");
+			
+			
+			
+			
+			
 			// The Surface has been created, acquire the camera and tell it where
 			// to draw.
+			/*
 			mCamera = Camera.open();
 			try {
 				mCamera.setPreviewDisplay(holder);
@@ -136,6 +201,7 @@ public class Main extends AndroidHarness {
 				mCamera = null;
 				// TODO: add more exception handling logic here
 			}
+			*/
 		}
 
 		public void surfaceDestroyed(SurfaceHolder holder) {

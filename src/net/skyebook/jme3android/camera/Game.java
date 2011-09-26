@@ -46,7 +46,10 @@ public class Game extends SimpleApplication {
 	}
 	
 	public void setTexture(int format, int width, int height, ByteBuffer data){
-		Image image = new Image(Image.Format.RGB8, width, height, data);
+		Image image = new Image(Image.Format.RGB565, width, height, data);
+		
+		System.out.println("Video Format: " + format);
+		
 		Texture2D texture = new Texture2D(image);
 		material.setTexture("ColorMap", texture);
 	}
