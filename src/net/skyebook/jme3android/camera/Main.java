@@ -1,5 +1,6 @@
 package net.skyebook.jme3android.camera;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -11,7 +12,9 @@ import com.tomgibara.YUVRGBConverter;
 
 import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.graphics.ImageFormat;
+import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
@@ -77,28 +80,26 @@ public class Main extends AndroidHarness {
 			@Override
 			public void onPreviewFrame(byte[] data, Camera camera) {
 				
-				
 				// we're getting the data back in NV21, which is similar to yuv420 (u and v are flipped)
-
 				
-				
-				int width = camera.getParameters().getPictureSize().width;
-				int height = camera.getParameters().getPictureSize().height;
-				Log.e("JME3", "Updating jME Texture");
+				int width = camera.getParameters().getPreviewSize().width;
+				int height = camera.getParameters().getPreviewSize().height;
 				
 				YuvImage yuv = new YuvImage(data, camera.getParameters().getPreviewFormat(), width, height, null);
-				try {
-					FileOutputStream fos = new FileOutputStream("assets/test.png");
-				} catch (FileNotFoundException e) {
-					Log.e("JME3", "Can't write file");
-					e.printStackTrace();
-				}
+				//FileOutputStream fos = new FileOutputStream("assets/test.jpg");
+				ByteArrayOutputStream bos = new ByteArrayOutputStream();
+				Log.e("JME3", "ByteArrayOutputStream created");
+				yuv.compressToJpeg(new Rect(0, 0, width, height), 50, bos);
 				
-				YUVRGBConverter.toRGB565(data, width, height, bytes);
-				tData.clear();
-				tData.put(bytes);
-				getGame().setTexture(camera.getParameters().getPreviewFormat(), width, height, tData);
-				Log.e("JME3", "Updating jME Texture");
+				
+				
+				//YUVRGBConverter.toRGB565(data, width, height, bytes);
+				//tData.clear();
+				//tData.put(bytes);
+				getGame().setTexture(camera.getParameters().getPreviewFormat(), width, height, bos.toByteArray());
+				//Log.e("JME3", "Updating jME Texture");
+				
+				Log.e("JME3", "Image compressed to " + bos.toByteArray().length + " bytes");
 
 			}
 		});

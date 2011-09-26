@@ -3,16 +3,27 @@
  */
 package net.skyebook.jme3android.camera;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.asset.AssetInfo;
+import com.jme3.asset.AssetKey;
+import com.jme3.asset.AssetManager;
+import com.jme3.asset.TextureKey;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.android.TextureUtil;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.plugins.blender.textures.TextureHelper;
 import com.jme3.scene.shape.Box;
 import com.jme3.texture.Image;
+import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
+import com.jme3.texture.plugins.AndroidImageLoader;
 
 /**
  * @author Skye Book
@@ -23,12 +34,14 @@ public class Game extends SimpleApplication {
 	private Box box;
 	private Material material;
 	private boolean sceneInitialized = false;
+	private AndroidImageLoader ail;
+	private Texture2D cameraTexture;
 
 	/**
 	 * 
 	 */
 	public Game() {
-		
+		ail = new AndroidImageLoader();
 	}
 
 	/* (non-Javadoc)
@@ -46,23 +59,63 @@ public class Game extends SimpleApplication {
 		rootNode.attachChild(geometry);
 		
 		sceneInitialized = true;
+		
+		cameraTexture = new Texture2D();
 	}
 	
-	public void setTexture(int format, int width, int height, ByteBuffer data){
-		
-		
-		assetManager.loadTexture("test.jpg");
-		
+	public void setTexture(int format, int width, int height, byte[] data){
 		
 		// Only proceed if the scene has already been setup
 		if(!sceneInitialized) return;
 		
-		Image image = new Image(Image.Format.RGB565, width, height, data);
+		try {
+			Image image = (Image)ail.load(new ByteArrayInfo(data));
+			cameraTexture.setImage(image);
+		} catch (IOException e) {
+			System.out.println("IMAGE LOAD FAILED");
+		}
 		
-		System.out.println("---------------------Preview Format: " + format);
+		material.setTexture("ColorMap", cameraTexture);
+	}
+	
+	public void setTexture(int format, int width, int height, ByteBuffer data){
 		
-		Texture2D texture = new Texture2D(image);
-		material.setTexture("ColorMap", texture);
+		// Only proceed if the scene has already been setup
+		if(!sceneInitialized) return;
+		
+		Texture t = assetManager.loadTexture("assets/test.jpg");
+		material.setTexture("ColorMap", t);
+		
+		
+		//Image image = new Image(Image.Format.RGB565, width, height, data);
+		
+		//System.out.println("---------------------Preview Format: " + format);
+		
+		//Texture2D texture = new Texture2D(image);
+		//material.setTexture("ColorMap", texture);
+	}
+	
+	private class ByteArrayInfo extends AssetInfo{
+		
+		private byte[] data;
+
+		/**
+		 * @param manager
+		 * @param key
+		 */
+		public ByteArrayInfo(byte[] data) {
+			super(assetManager, new TextureKey("ByteArray", false));
+			this.data=data;
+		}
+
+		/* (non-Javadoc)
+		 * @see com.jme3.asset.AssetInfo#openStream()
+		 */
+		@Override
+		public InputStream openStream() {
+			return new ByteArrayInputStream(data);
+		}
+		
 	}
 
 }
