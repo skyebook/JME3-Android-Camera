@@ -2,37 +2,24 @@ package net.skyebook.jme3android.camera;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.List;
 
 import com.jme3.app.AndroidHarness;
 import com.jme3.system.android.AndroidConfigChooser.ConfigType;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PreviewCallback;
-import android.hardware.Camera.Size;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.View.OnCreateContextMenuListener;
 
 public class Main extends AndroidHarness {
 	private Preview mPreview;
 	Camera mCamera;
-	int numberOfCameras;
-	int cameraCurrentlyLocked;
 
 	public Main(){
 		appClass = "net.skyebook.jme3android.camera.Game";
@@ -57,7 +44,6 @@ public class Main extends AndroidHarness {
 		params.setPreviewFormat(ImageFormat.RGB_565);
 		mCamera.setParameters(params);
 		
-		cameraCurrentlyLocked = defaultCameraId;
 		mPreview = new Preview(this);
 		//mCamera.setPreviewDisplay(mPreview);
 		
@@ -95,9 +81,6 @@ public class Main extends AndroidHarness {
 		Log.e("JME3", "On Create Finished");
 	}
 
-
-	// The first rear facing camera
-	int defaultCameraId;
 
 	@Override
 	protected void onResume() {
