@@ -53,7 +53,7 @@ public class Game extends SimpleApplication {
 		Geometry geometry = new Geometry("box", box);
 		
 		material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-		material.setColor("Color", ColorRGBA.Blue);
+		//material.setColor("Color", ColorRGBA.Blue);
 		geometry.setMaterial(material);
 		
 		rootNode.attachChild(geometry);
