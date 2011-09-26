@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry kind="lib" path="lib/assets.jar"/>
+	<classpathentry kind="lib" path="lib/eventbus-1.4.jar"/>
+	<classpathentry kind="lib" path="lib/j-ogg-oggd.jar"/>
+	<classpathentry kind="lib" path="lib/j-ogg-vorbisd.jar"/>
+	<classpathentry kind="lib" path="lib/jbullet.jar"/>
+	<classpathentry kind="lib" path="lib/jME3-jbullet.jar"/>
+	<classpathentry kind="lib" path="lib/jMonkeyEngine3.jar"/>
+	<classpathentry kind="lib" path="lib/nifty-1.3.jar"/>
+	<classpathentry kind="lib" path="lib/nifty-default-controls-1.3.jar"/>
+	<classpathentry kind="lib" path="lib/nifty-style-black-1.3.jar"/>
+	<classpathentry kind="lib" path="lib/noise-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/stack-alloc.jar"/>
+	<classpathentry kind="lib" path="lib/vecmath.jar"/>
+	<classpathentry kind="lib" path="lib/xmlpull-xpp3-1.1.4c.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
