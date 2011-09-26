@@ -1,17 +1,22 @@
 package net.skyebook.jme3android.camera;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import com.jme3.app.AndroidHarness;
 import com.jme3.system.android.AndroidConfigChooser.ConfigType;
+import com.tomgibara.YUVRGBConverter;
 
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.ImageFormat;
+import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PreviewCallback;
+import android.hardware.Camera.Size;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -19,7 +24,10 @@ import android.view.SurfaceView;
 
 public class Main extends AndroidHarness {
 	private Preview mPreview;
-	Camera mCamera;
+	private Camera mCamera;
+	private byte[] bytes;
+	private ByteBuffer tData;
+	
 
 	public Main(){
 		appClass = "net.skyebook.jme3android.camera.Game";
@@ -39,9 +47,23 @@ public class Main extends AndroidHarness {
 		// Open the default i.e. the first rear facing camera.
 		mCamera = Camera.open();
 		
+		// What camera formats are supported?
+		for(Integer format : mCamera.getParameters().getSupportedPreviewFormats()){
+			System.out.println("ImageFormat: " + format);
+		}
+		
+		
+		// What camera preview resolutions are supported?
+		for(Size size : mCamera.getParameters().getSupportedPreviewSizes()){
+			System.out.println("PreviewSize: " + size.width+","+size.height);
+		}
+		
 		// camera parameters need to be reset before they will take effect
 		Parameters params = mCamera.getParameters();
-		params.setPreviewFormat(ImageFormat.RGB_565);
+		//params.setPreviewFormat(ImageFormat.RGB_565);
+		params.setPreviewSize(480, 320);
+		bytes = new byte[((480*320)*2)];
+		tData = ByteBuffer.allocateDirect(((480*320)*2));
 		mCamera.setParameters(params);
 		
 		mPreview = new Preview(this);
@@ -54,12 +76,27 @@ public class Main extends AndroidHarness {
 
 			@Override
 			public void onPreviewFrame(byte[] data, Camera camera) {
+				
+				
+				// we're getting the data back in NV21, which is similar to yuv420 (u and v are flipped)
 
-				ByteBuffer tData = ByteBuffer.allocateDirect(data.length);
-				tData.put(data);
+				
+				
 				int width = camera.getParameters().getPictureSize().width;
 				int height = camera.getParameters().getPictureSize().height;
 				Log.e("JME3", "Updating jME Texture");
+				
+				YuvImage yuv = new YuvImage(data, camera.getParameters().getPreviewFormat(), width, height, null);
+				try {
+					FileOutputStream fos = new FileOutputStream("assets/test.png");
+				} catch (FileNotFoundException e) {
+					Log.e("JME3", "Can't write file");
+					e.printStackTrace();
+				}
+				
+				YUVRGBConverter.toRGB565(data, width, height, bytes);
+				tData.clear();
+				tData.put(bytes);
 				getGame().setTexture(camera.getParameters().getPreviewFormat(), width, height, tData);
 				Log.e("JME3", "Updating jME Texture");
 
@@ -140,11 +177,11 @@ public class Main extends AndroidHarness {
 				@Override
 				public void onPreviewFrame(byte[] data, Camera camera) {
 
-					ByteBuffer tData = ByteBuffer.allocateDirect(data.length);
-					tData.put(data);
 					int width = camera.getParameters().getPictureSize().width;
 					int height = camera.getParameters().getPictureSize().height;
 					Log.e("JME3", "Updating jME Texture");
+					YUVRGBConverter.toRGB565(data, width, height, bytes);
+					tData.put(bytes);
 					getGame().setTexture(camera.getParameters().getPreviewFormat(), width, height, tData);
 					Log.e("JME3", "Updating jME Texture");
 
