@@ -22,6 +22,7 @@ public class Game extends SimpleApplication {
 	
 	private Box box;
 	private Material material;
+	private boolean sceneInitialized = false;
 
 	/**
 	 * 
@@ -43,9 +44,15 @@ public class Game extends SimpleApplication {
 		geometry.setMaterial(material);
 		
 		rootNode.attachChild(geometry);
+		
+		sceneInitialized = true;
 	}
 	
 	public void setTexture(int format, int width, int height, ByteBuffer data){
+		
+		// Only proceed if the scene has already been setup
+		if(!sceneInitialized) return;
+		
 		Image image = new Image(Image.Format.RGB565, width, height, data);
 		
 		System.out.println("Video Format: " + format);

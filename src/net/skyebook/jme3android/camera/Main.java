@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
+import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PreviewCallback;
 import android.hardware.Camera.Size;
 import android.os.Bundle;
@@ -50,7 +51,12 @@ public class Main extends AndroidHarness {
 
 		// Open the default i.e. the first rear facing camera.
 		mCamera = Camera.open();
-		mCamera.getParameters().setPreviewFormat(ImageFormat.RGB_565);
+		
+		// camera parameters need to be reset before they will take effect
+		Parameters params = mCamera.getParameters();
+		params.setPreviewFormat(ImageFormat.RGB_565);
+		mCamera.setParameters(params);
+		
 		cameraCurrentlyLocked = defaultCameraId;
 		mPreview = new Preview(this);
 		//mCamera.setPreviewDisplay(mPreview);
