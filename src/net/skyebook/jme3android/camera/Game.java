@@ -10,15 +10,10 @@ import java.nio.ByteBuffer;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetInfo;
-import com.jme3.asset.AssetKey;
-import com.jme3.asset.AssetManager;
 import com.jme3.asset.TextureKey;
 import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.android.TextureUtil;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.plugins.blender.textures.TextureHelper;
 import com.jme3.scene.shape.Box;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
