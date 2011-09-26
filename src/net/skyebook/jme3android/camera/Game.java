@@ -104,7 +104,7 @@ public class Game extends SimpleApplication {
 		 * @param key
 		 */
 		public ByteArrayInfo(byte[] data) {
-			super(assetManager, new TextureKey("ByteArray", false));
+			super(assetManager, new TextureKey("ByteArray", true));
 			this.data=data;
 		}
 
