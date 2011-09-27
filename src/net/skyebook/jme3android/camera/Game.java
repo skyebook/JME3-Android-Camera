@@ -20,7 +20,6 @@ package net.skyebook.jme3android.camera;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetInfo;
@@ -30,7 +29,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 import com.jme3.texture.Image;
-import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
 import com.jme3.texture.plugins.AndroidImageLoader;
 
@@ -85,23 +83,6 @@ public class Game extends SimpleApplication {
 		}
 		
 		material.setTexture("ColorMap", cameraTexture);
-	}
-	
-	public void setTexture(int format, int width, int height, ByteBuffer data){
-		
-		// Only proceed if the scene has already been setup
-		if(!sceneInitialized) return;
-		
-		Texture t = assetManager.loadTexture("assets/test.jpg");
-		material.setTexture("ColorMap", t);
-		
-		
-		//Image image = new Image(Image.Format.RGB565, width, height, data);
-		
-		//System.out.println("---------------------Preview Format: " + format);
-		
-		//Texture2D texture = new Texture2D(image);
-		//material.setTexture("ColorMap", texture);
 	}
 	
 	private class ByteArrayInfo extends AssetInfo{
